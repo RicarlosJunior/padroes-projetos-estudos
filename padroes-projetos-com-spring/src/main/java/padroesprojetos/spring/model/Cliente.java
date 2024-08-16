@@ -10,9 +10,10 @@ import jakarta.persistence.ManyToOne;
 public class Cliente {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	
 	@ManyToOne
 	private Endereco endereco;
 	

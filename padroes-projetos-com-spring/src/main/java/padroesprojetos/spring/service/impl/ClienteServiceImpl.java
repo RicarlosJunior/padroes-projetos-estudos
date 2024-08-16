@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import padroesprojetos.spring.model.Cliente;
-import padroesprojetos.spring.model.ClienteRepository;
 import padroesprojetos.spring.model.Endereco;
-import padroesprojetos.spring.model.EnderecoRepository;
+import padroesprojetos.spring.repository.ClienteRepository;
+import padroesprojetos.spring.repository.EnderecoRepository;
 import padroesprojetos.spring.service.ClienteService;
 import padroesprojetos.spring.service.ViaCepService;
 
@@ -45,6 +45,7 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Override
 	public void atualizar(Integer id, Cliente cliente) {
+		
 		//Aqui temos algumas regras!
 		Optional<Cliente> clienteBancoDados = clienteRepository.findById(id);
 		
@@ -67,10 +68,10 @@ public class ClienteServiceImpl implements ClienteService {
 		String cep = cliente.getEndereco().getCep();
 		
 		//Faz uma consulta no banco de dados atraves do enderecoRepository passando o cep, 
-		//caso ja exista o endereço é retornado! Caso não o metodo orElseGet é acionado
+		//caso ja exista, o endereço é retornado! Caso não o metodo orElseGet é acionado
 		Endereco endereco = enderecoRepository.findById(cep).orElseGet(() -> {
 			
-			//Caso o endereço ainda nao exista no banco de dados e feito uma consulta via api no ViaCep
+			//Caso o endereço ainda nao exista no banco de dados, é feito uma consulta via api no ViaCep
 			//atraves do viaCepService chamando o endpoint consultarCep
 			Endereco novoEndereco = viaCepService.consultarCep(cep);
 			
@@ -83,7 +84,7 @@ public class ClienteServiceImpl implements ClienteService {
 		//seta o endereço no objeto cliente
 		cliente.setEndereco(endereco);
 		
-		//agora sim é feito o insert de cliente (com endereço existente ou novo endereço)
+		//agora sim é feito o insert/update de cliente (com endereço existente ou novo endereço)
 		clienteRepository.save(cliente);
 	}
 
